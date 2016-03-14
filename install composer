@@ -1,0 +1,38 @@
+Centos下如何安装composer
+
+一、如果没有安装php openssl扩展，操作如下步骤
+
+centos下php添加openssl扩展
+
+环境:Centos 5.6   php 5.3.x
+
+php路径:/usr/local/webserver/php
+
+php源文件路径:/data/soft/php5.3.x
+
+因移动支付申请支付宝接口，需要添加openssl扩展来支持接口文件
+
+安装过程
+
+#进入php openssl扩展目录
+cd /data/soft/php5.3.x/ext/openssl
+
+/usr/local/webserver/php/bin/phpize
+./configure  --with-openssl --with-php-config=/usr/local/webserver/php/bin/php-config
+make
+make install
+
+编辑php.ini文件，找到extension_dir，在其下方添加extension = "openssl.so"
+
+重启php kill -SIGUSR2 `cat /usr/local/webserver/php/logs/php-fpm.pid`
+
+最后检查扩展是否安装成功
+
+/usr/local/webserver/php/bin/php -i |grep openssl
+
+二、正式安装composer,其实是下载一个composer.phar文件
+
+# curl -sS https://getcomposer.org/installer | /usr/local/php/bin/php
+
+# cd到项目目录
+# /usr/local/php/bin/php composer.phar install

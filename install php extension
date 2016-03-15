@@ -1,0 +1,57 @@
+CentOS下安装php扩展实例：
+
+注意：如果configure时出错了，可以执行./configure --help来查看帮助。并结合错误提示信息等。
+
+
+php5.6.11
+使php支持访问mssql，增加mssql扩展。
+1.freetds0.8 + mssql 
+
+下载源码安装freetds0.8，安装目录: /usr/local/freetds/
+安装完成后会生成一些工具在/usr/local/freetds/bin/下；
+会生成配置文件在/usr/local/freetds/etc/下文件名：freetds.conf
+
+现在正式扩展php的mssql模块，主要是让freetds和php扩展模块mssql合成一个.so的文件
+
+进入php源码包以下位置
+$ cd /root/package/php5.6.11/ext/mssql/
+使用phpize工具在此目录下生成configure工具等文件，执行以下命令
+$ /usr/local/php/bin/phpize
+此时此目录下会多出好几个文件来，然后再执行以下命令：
+$ ./configure --with-php-config=/usr/local/php/bin/php-config --with-mssql=/usr/local/freetds/
+如果成功了再执行
+$ make -j 4
+$ make install //此时成功了会在目录/usr/local/php/lib/php/extensions/no-debug-zts-20131226/下
+生成一个mssql.so文件。此文件目录可以在<?php phpinfo(); ?>页面里查看得到。
+找到php.ini文件进行配置。增加以下一句即可：
+搜索关键字extension位置下增加以下一句：
+extension = "mssql.so"
+
+ok了。
+
+2.扩展pdo_odbc模块，与上面的扩展模块有一点不一样
+它需要unixODBC的支持。
+下载源码并安装unixODBC。并安装在/usr/local/unixODBC目录下。安装成功后它也会生成一些工具和配置文件
+
+现在正式扩展php的pdo_odbc模块，主要是让unixodbc和php的扩展模块pdo_odbc合成一个pdo_odbc.so的文件
+
+进入php源码包以下位置
+$ cd /root/package/php5.6.11/ext/pdo_odbc/
+使用phpize工具在此目录下生成configure工具等文件，执行以下命令
+$ /usr/local/php/bin/phpize
+此时此目录下会多出好几个文件来，然后再执行以下命令：
+$ ./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-odbc=unixODBC,/usr/local/unixODBC
+特别注意：如果以上出错了提示找不到头文件，则要看提示目录，修正unixODBC的安装目录，
+它会去找unixODBC目录下的include目录下的头文件。
+如果成功了再执行
+$ make -j 4
+$ make install //此时成功了会在目录/usr/local/php/lib/php/extensions/no-debug-zts-20131226/下
+生成一个pdo_odbc.so文件。此文件目录可以在<?php phpinfo(); ?>页面里查看得到。
+找到php.ini文件进行配置。增加以下一句即可：
+搜索关键字extension位置下增加以下一句：
+extension = "pdo_odbc.so"
+
+ok了。
+
+
+

@@ -1,5 +1,7 @@
 在linux下要让php支持mssql通常需要使用组件freeTDS
 freeTDS 的官方网站为：http://www.freetds.org/
+最新下载地址目录：
+ftp://ftp.freetds.org/pub/freetds/stable/release_candidates
 当前最新版本为 0.82 下载目录为：http://www.ibiblio.org/pub/Linux/ALPHA/freetds/stable/
 下载地址为：http://www.ibiblio.org/pub/Linux/ALPHA/freetds/stable/freetds-0.82.tar.gz
 freeTDS的安装之前需要先安装 libiconv，安装好libiconv(安装在这里不做具体说明)以后，执行 ln -s /usr/local/lib/libiconv.so* /usr/lib

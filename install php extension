@@ -31,8 +31,8 @@ ok了。
 
 2.扩展pdo_odbc模块，与上面的扩展模块有一点不一样
 它需要unixODBC的支持。
-下载源码并安装unixODBC。并安装在/usr/local/unixODBC目录下。安装成功后它也会生成一些工具和配置文件
-
+下载源码并安装unixODBC。并安装在/usr/local/unixODBC目录下。安装成功后它也会生成一些工具，但配置文件
+会生成在/etc/目录下为odbc.ini和odbcinst.ini
 现在正式扩展php的pdo_odbc模块，主要是让unixodbc和php的扩展模块pdo_odbc合成一个pdo_odbc.so的文件
 
 进入php源码包以下位置

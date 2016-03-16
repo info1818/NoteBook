@@ -1,0 +1,14 @@
+当你不小心把linux系统的/root家目录删除了之后：
+
+自己建立root的家目录
+
+mkdir /root
+
+#进入家目录
+cd /root 
+
+#复制/etc/skel/模版到家目录，此目录下的文件是隐藏文件cd进去是看不到的
+cp -r /etc/skel/. /root
+
+3.然后重启系统即可
+reboot

@@ -1,0 +1,204 @@
+安装mysql数据库
+_____________________________________________________________________________________
+1.先安装依赖包
+
+yum -y install ncurses-devel
+
+
+
+2.先安装cmake工具
+
+进入源码包目录：
+
+./bootstrap
+
+make
+
+make install
+
+添加MySQL用户和用户组
+[root@localhost ~]# groupadd mysql
+[root@localhost ~]# useradd -g mysql mysql
+
+3.再安装mysql源码，过入mysql源码包目录
+
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql5 
+-DMYSQL_DATADIR=/mydata 
+-DMYSQL_UNIX_ADDR=/tmp/mysql.sock 
+-DWITH_INNOBASE_STORAGE_ENGINE=1 
+-DMYSQL_TCP_PORT=3306 
+-DEXTRA_CHARSETS=all 
+-DDEFAULT_CHARSET=utf8 
+-DDEFAULT_COLLATION=utf8_general_ci 
+-DWITH_DEBUG=0
+
+make 
+
+make install
+
+
+如果编译出错，执行
+
+删除文件夹下的文件 rm CMakeCache.txt
+
+重新编译即可
+
+
+4.初始化mysql服务
+进入源码包安装包目录下：
+
+[root@dg53 mysql-5.5.25]# cp ./support-files/my-large.cnf /etc/my.cnf
+[root@dg53 mysql-5.5.25]# cp ./support-files/mysql.server /etc/init.d/mysqld   
+[root@dg53 mysql-5.5.25]# chmod +x /etc/init.d/mysqld   
+[root@dg53 mysql-5.5.25]# chkconfig --add mysqld
+[root@dg53 mysql-5.5.25]# sh ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql5/ --datadir=/mydata/
+
+# service mysqld start
+
+# ln -s /usr/local/mysql5/bin/mysql /usr/bin/mysql
+
+测试登录初始密码为空
+# mysql -uroot -p
+
+# ln -s /usr/local/mysql5/bin/mysqladmin /usr/bin/mysqladmin
+
+修改mysql登录密码
+
+# mysqladmin -u root password
+
+
+_________________________________________________________________________________________
+
+
+1. 安装Apache2.4
+
+		apr-1.5.1.tar.bz2
+
+		apr-util-1.5.4.tar.bz2
+
+		pcre-8.36.tar.bz2
+
+		这些是Apache依赖的一些安装包，解压，安装。
+
+
+		tar -jxvf apr-1.5.1.tar.bz2
+		cd apr-1.5.1
+		./configure --prefix=/usr/local/apr
+		make && make install
+
+
+		cd apr-util-1.5.4
+		./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr
+		make && make install
+
+
+		cd pcre-8.36
+		./configure
+		make && make install
+
+
+		都完成后正式安装Apache
+
+		cd httpd-2.4.10
+		./configure --prefix=/usr/local/apache2 \
+		--with-apr=/usr/local/apr \
+		--with-apr-util=/usr/local/apr-util \
+		--with-pcre=/usr/local/pcre \
+		--enable-so \
+		--enable-rewrite \
+		make && make install
+
+
+		cp /usr/local/apache2/bin/apachectl /etc/rc.d/init.d/httpd
+		1.编辑/etc/init.d/httpd文件加入两句
+		#!/bin/bash
+		#chkconfig:345 61 61
+		#description:Apache httpd
+		再执行以下命令：
+		chkconfig --add httpd
+		service httpd start
+
+		测试是否安装成功
+
+
+		出现“It works”就说明Apache已经正常安装。
+
+
+____________________________________________________________________________________________________
+
+
+安装php
+		解压php-5.6.4.tar.bz2后进入php-5.6.4目录
+
+		先安装依赖包
+
+		# yum install libxml2-devel -y
+
+		# yum -y install curl-devel
+
+		#  yum install bzip2-devel -y
+
+    	        # yum install libjpeg-devel -y
+
+		# yum install libpng-devel -y
+
+		# yum install freetype-devel
+		
+		#wget ftp://mcrypt.hellug.gr/pub/crypto/mcrypt/libmcrypt/libmcrypt-2.5.7.tar.gz
+		# ./configure
+		# make && make install
+		
+
+		# ./configure --prefix=/usr/local/php\
+		--with-apxs2=/usr/local/apache2/bin/apxs\
+		--with-libxml-dir=/usr/include/libxml2\
+		--with-config-file-path=/usr/local/apache2/conf\
+		--with-mysql=/usr/local/mysql\
+		--with-mysqli=/usr/local/mysql/bin/mysql_config\
+		--with-gd --enable-gd-native-ttf\
+		--with-zlib\
+		--with-mcrypt\
+		--with-pdo-mysql=/usr/local/mysql\
+		--enable-shmop\
+		--enable-soap\
+		--enable-sockets\
+		--enable-wddx\
+		--enable-zip\
+		--with-xmlrpc\
+		--enable-fpm\
+		--enable-mbstring\
+		--with-zlib-dir\
+		--with-bz2\
+		--with-curl\
+		--enable-exif\
+		--enable-ftp\
+		--with-jpeg-dir=/usr/lib\
+		--with-png-dir=/usr/lib\
+		--with-freetype-dir=/usr/lib/
+		编译通过后，执行
+		# make
+		# make install
+
+		apache配置文件httpd.conf相关修改以支持PHP
+		# vim /usr/local/apache2/conf/httpd.conf
+		1. 添加php支持。
+		AddType application/x-httpd-php .php .phtml
+		AddType application/x-httpd-php-source .phps
+		2. 添加默认索引页面index.php，再找到“DirectoryIndex”，在index.html后面加上“ index.php”
+		DirectoryIndex index.html index.php
+		3. 不显示目录结构，找到“Options Indexes FollowSymLinks”，修改为
+		Options FollowSymLinks
+		4. 开启Apache支持伪静态，找到“AllowOverride None”，修改为
+		AllowOverride All
+		保存httpd.conf配置，然后再执行以下两行命令
+		 chown -R nobody. /usr/local/apache2/htdocs/
+		 chmod -R 777 /usr/local/apache2/htdocs/
+		 重新启动apache服务器
+		 /usr/local/apache2/bin/apachecl restart
+		 [特别注意：源码包安装的程序不可以用service httpd start启动,用service httpd start启动的是rpm包安装的程序
+		 			这时可能存在两个apache服务软件，要停止掉rpm安装的apache,不然php无法解释执行，会变成文件下载。
+		 ]
+		 在目录/var/www下就可以放php等web网站文件了。
+
+
+

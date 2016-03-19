@@ -1,0 +1,74 @@
+1.先安装依赖包
+
+yum -y install ncurses-devel
+
+
+
+2.先安装cmake工具
+
+进入源码包目录：
+
+./bootstrap
+
+make
+
+make install
+
+添加MySQL用户和用户组
+[root@localhost ~]# groupadd mysql
+[root@localhost ~]# useradd -g mysql mysql
+
+3.再安装mysql源码，过入mysql源码包目录
+
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql5 
+-DMYSQL_DATADIR=/mydata 
+-DMYSQL_UNIX_ADDR=/tmp/mysql.sock 
+-DWITH_INNOBASE_STORAGE_ENGINE=1 
+-DMYSQL_TCP_PORT=3306 
+-DEXTRA_CHARSETS=all 
+-DDEFAULT_CHARSET=utf8 
+-DDEFAULT_COLLATION=utf8_general_ci 
+-DWITH_DEBUG=0
+
+make 
+
+make install
+
+
+如果编译出错，执行
+
+删除文件夹下的文件 rm CMakeCache.txt
+
+重新编译即可
+
+
+4.初始化mysql服务
+进入源码包安装包目录下：
+
+[root@dg53 mysql-5.5.25]# cp ./support-files/my-large.cnf /etc/my.cnf
+[root@dg53 mysql-5.5.25]# cp ./support-files/mysql.server /etc/init.d/mysqld   
+[root@dg53 mysql-5.5.25]# chmod +x /etc/init.d/mysqld   
+[root@dg53 mysql-5.5.25]# chkconfig --add mysqld
+[root@dg53 mysql-5.5.25]# sh ./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql5/ --datadir=/mydata/
+
+# service mysqld start
+
+# ln -s /usr/local/mysql5/bin/mysql /usr/bin/mysql
+
+测试登录初始密码为空
+# mysql -uroot -p
+
+# ln -s /usr/local/mysql5/bin/mysqladmin /usr/bin/mysqladmin
+
+修改mysql登录密码
+
+# mysqladmin -u root password
+
+
+
+
+
+
+
+
+

@@ -12,3 +12,20 @@ mysql> flush privileges;
 
 3.格式化查询输出
 mysql> SELECT * FROM user\G;
+	
+	4.查看数据库编码及表创建语句
+	mysql> show create database db_name; //查看数据库的编码
+	mysql> show create table table_name; //查看表的创建语句
+
+	5.修改数据库的编码
+	mysql> alter database db_name character set=utf8;
+	
+	6.删除数据库
+	mysql> drop db_name;
+
+	7.把查询的列结果导入到表的列中
+	mysql> insert table_name1(column_name) select column_name from table_name2 where ..;
+	
+	8. group by .. having .. 对查询结果进行分组
+
+	9. 子查询：当子查询返回的结果有多个的时候使用关键字 ANY , SOME , ALL 

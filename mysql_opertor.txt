@@ -1,0 +1,14 @@
+1.查询表结构
+desc table_name  或 
+show columns from table_name;
+
+2.mysql授权给远程特定ip主机访问
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'tuser'@'192.168.1.100' IDENTIFIED BY 'passwd' WITH GRANT OPTION;
+mysql> flush privileges;
+
+任意主机访问授权
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'pwd' WITH GRANT OPTION;
+mysql> flush privileges;
+
+3.格式化查询输出
+mysql> SELECT * FROM user\G;

@@ -1,0 +1,11 @@
+如何解决centos下使用vi打开文档中文是乱码的问题：
+在root家目录下新建一个.vimrc文件：
+
+>  vi ~/.vimrc
+
+并且在该文件中添加如下几行：
+
+let &termencoding=&encoding
+set fileencodings=utf-8,gbk
+
+保存退出。OK
